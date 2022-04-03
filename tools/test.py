@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft
 # Licensed under the MIT License.
 # Created by Tianheng Cheng(tianhengcheng@gmail.com)
+# Modified by ylab
 # ------------------------------------------------------------------------------
 
 import os
@@ -76,8 +77,7 @@ def main():
     model = models.Hrnet2DNnet(config)
     gpus = list(config.GPUS)
     model = nn.DataParallel(model, device_ids=gpus).cuda()
-    # model.load_state_dict(state_dict)
-    # model.eval() , strict=False
+
     ###############################
     state_dict = torch.load(args.model_file, map_location=torch.device("cpu"))
 
@@ -108,55 +108,6 @@ def main():
     output = model(img_t)
     output = output.squeeze()
     plt.imsave('4_2.jpeg',reNormalize(output,mean,std))
-    # print(output.size())
-    #tf = transforms.ToPILImage()
-    #output = tf(output)
-    #output = np.array(output)
-    # print(output)
-    # output.show()
-    # output = output.detach().cpu().numpy()
-    # print(output.shape)
-    #plt.imshow('output.jpeg',output)
-    #plt.imsave("output.jpeg", np.transpose(output[0][0], (0, 1)))
-
-    # logger, final_output_dir, tb_log_dir = utils.create_logger(config, args.cfg, "test")
-
-    # logger.info(pprint.pformat(args))
-    # logger.info(pprint.pformat(config))
-
-    # cudnn.benchmark = config.CUDNN.BENCHMARK
-    # cudnn.determinstic = config.CUDNN.DETERMINISTIC
-    # cudnn.enabled = config.CUDNN.ENABLED
-
-    # config.defrost()
-    # config.MODEL.INIT_WEIGHTS = False
-    # config.freeze()
-    # model = models.get_face_alignment_net(config)
-
-    # gpus = list(config.GPUS)
-    # model = nn.DataParallel(model, device_ids=gpus).cuda()
-
-    # load model
-    # state_dict = torch.load(args.model_file)
-    # if "state_dict" in state_dict.keys():
-    #    state_dict = state_dict["state_dict"]
-    #    model.load_state_dict(state_dict)
-    # else:
-    #    model.module.load_state_dict(state_dict)
-
-    # dataset_type = get_dataset(config)
-
-    # test_loader = DataLoader(
-    #    dataset=dataset_type(config, is_train=False),
-    #    batch_size=config.TEST.BATCH_SIZE_PER_GPU * len(gpus),
-    #    shuffle=False,
-    #    num_workers=config.WORKERS,
-    #    pin_memory=config.PIN_MEMORY,
-    # )
-
-    # nme, predictions = function.inference(config, test_loader, model)
-
-    # torch.save(predictions, os.path.join(final_output_dir, "predictions.pth"))
 
 
 if __name__ == "__main__":
