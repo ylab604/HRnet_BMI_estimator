@@ -80,10 +80,8 @@ def main():
     # model.eval() , strict=False
     ###############################
     state_dict = torch.load(args.model_file, map_location=torch.device("cpu"))
-    #keys = list(check_ge['netG_state_dict'].keys())
-    #for i in range(len(keys)):
-    #    temp = keys[i].replace('module.', '')
-    #    check_ge['netG_state_dict'][temp] = check_ge['netG_state_dict'].pop(keys[i])
+
+   
     ###############################
 
 
