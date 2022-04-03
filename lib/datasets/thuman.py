@@ -15,7 +15,7 @@ import numpy as np
 import torchvision.transforms as transforms
 from lib.utils.transforms import fliplr_joints, crop, generate_target, transform_pixel
 
-# 아 얘가 문제네
+#
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
