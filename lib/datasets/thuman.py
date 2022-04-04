@@ -124,14 +124,7 @@ class Thuman(data.Dataset):
         depth_img = self.depth_transforms(depth_img)
         img = render_img
         target = normal_img
-        # image_path = os.path.join(self.data_root, self.landmarks_frame.iloc[idx, 0])
-        # img = np.array(Image.open(image_path).convert("RGB"), dtype=np.float32)
-        # img = img.astype(np.float32)
-        # img = (img / 255.0 - self.mean) / self.std
-        # img = img.transpose([2, 0, 1])
-        # target = torch.Tensor(target)
-        # tpts = torch.Tensor(tpts)
-        # center = torch.Tensor(center)
+     
 
         return {"A": img, "B": target, "C": depth_img}
 
