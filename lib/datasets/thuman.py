@@ -15,7 +15,6 @@ import numpy as np
 import torchvision.transforms as transforms
 from lib.utils.transforms import fliplr_joints, crop, generate_target, transform_pixel
 
-#
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -39,37 +38,68 @@ class Thuman(data.Dataset):
         normal_transforms=None,
         depth_transforms=None,
     ):
-       
+        
         self.data_root = cfg.DATASET.ROOT
         self.input_size = cfg.MODEL.IMAGE_SIZE
         self.output_size = cfg.MODEL.HEATMAP_SIZE
         self.sigma = cfg.MODEL.SIGMA
-       
+        
+        # default = 가우시안
         self.label_type = cfg.MODEL.TARGET_TYPE
        
         self.render_transforms = transforms.Compose(render_transforms)
         self.normal_transforms = transforms.Compose(normal_transforms)
         self.depth_transforms = transforms.Compose(depth_transforms)
         # print(type(self.render_transforms))
-        self.render_files = sorted(
-            glob.glob(os.path.join(self.data_root, "RENDER\\0000") + "/*.*")
-        )
-        self.normal_files = sorted(
-            glob.glob(os.path.join(self.data_root, "RENDER_NORMAL\\0000") + "/*.*")
-        )
+       
+        ############################################################################
+        data_root_path = self.data_root+"/*"
+        data = glob.glob(data_root_path)
+        #get renderdata
+        render_file_list=[] 
+        for n in range(len(data)):
+            j = "{:04d}".format(n)
+            i = j + "_OBJ"
+            path = self.data_root + i + "/RENDER/" + j + "/*"
+            # print(path)
+            render_file_list_1=glob.glob(path)
+            render_file_list+=render_file_list_1
+            #print(1)
+            #print(render_file_list)
+            render_file_list = sorted(render_file_list)
+            #
 
-        self.depth_files = sorted(
-            glob.glob(os.path.join(self.data_root, "RENDER_DEPTH\\0000") + "/*.*")
-        )
-        self.render_files = sorted(
-            glob.glob(os.path.join(self.data_root, "RENDER\\0000") + "/*.*")
-        )
-        self.normal_files = sorted(
-            glob.glob(os.path.join(self.data_root, "RENDER_NORMAL\\0000") + "/*.*")
-        )
-        self.depth_files = sorted(
-            glob.glob(os.path.join(self.data_root, "RENDER_DEPTH\\0000") + "/*.*")
-        )
+        #print(render_file_list)
+        self.render_files=render_file_list
+        #get render_normal_data
+        render_normal_file_list=[] 
+        for n in range(len(data)):
+            j = "{:04d}".format(n)
+            i = j + "_OBJ"
+            path = self.data_root + i + "/RENDER_NORMAL/" + j + "/*"
+            # print(path)
+            
+            render_normal_file_list_1=glob.glob(path)
+            render_normal_file_list+=render_normal_file_list_1 
+            #print(file_list)
+            render_normal_file_list = sorted(render_normal_file_list)
+        self.normal_files=render_normal_file_list
+        #get render_depth_data
+        render_depth_file_list=[]
+        for n in range(len(data)):
+            j = "{:04d}".format(n)
+            i = j + "_OBJ"
+            path = self.data_root + i + "/RENDER_DEPTH/" + j + "/*"
+            # print(path)
+            #render_depth_file_list.append(glob.glob(path))
+            render_depth_file_list_1=glob.glob(path)
+            render_depth_file_list+=render_depth_file_list_1 
+            #print(file_list)
+            render_depth_file_list = sorted(render_depth_file_list)
+        self.depth_files=render_depth_file_list
+        
+        
+        ############################################################################
 
     def __len__(self):
         return len(self.render_files)
@@ -94,7 +124,15 @@ class Thuman(data.Dataset):
         depth_img = self.depth_transforms(depth_img)
         img = render_img
         target = normal_img
-      
+        # image_path = os.path.join(self.data_root, self.landmarks_frame.iloc[idx, 0])
+        # img = np.array(Image.open(image_path).convert("RGB"), dtype=np.float32)
+        # img = img.astype(np.float32)
+        # img = (img / 255.0 - self.mean) / self.std
+        # img = img.transpose([2, 0, 1])
+        # target = torch.Tensor(target)
+        # tpts = torch.Tensor(tpts)
+        # center = torch.Tensor(center)
+
         return {"A": img, "B": target, "C": depth_img}
 
 
