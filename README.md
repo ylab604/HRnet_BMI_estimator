@@ -6,11 +6,14 @@
 1. 현재 batchsize =32 으로 바꿈
 2. Hrnet-w18 로 세팅되어있음
 
+
+
 -- to do --
 1. validation loader 추가
 2. 두번째 HRnet input channel 1x1 conv로 수정
 3. 주석달기
 
 
+
 -- 주의사항 --
-yaml 파일 한글 주석처리해도 실행안됨
+* yaml 파일 한글 주석처리해도 실행안됨
