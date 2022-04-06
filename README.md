@@ -1,5 +1,7 @@
 # HRnet_estimator
 
+[!image]
+
 --고려사항 & to do--
 1. 현재 batchsize =32 으로 바꿈
 2. Hrnet-w18 로 세팅되어있음
