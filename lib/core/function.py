@@ -59,7 +59,7 @@ def train(config, train_loader, model, critertion, optimizer, epoch, writer_dict
         # measure data time
         inp = batch["A"]
         # print(inp.shape)
-        target = batch["B"]
+        target = torch.cat([batch["B"],batch["C"]],dim=1)
         data_time.update(time.time() - end)
 
         # compute the output
@@ -137,7 +137,7 @@ def validate(config, val_loader, model, criterion, epoch, writer_dict):
     with torch.no_grad():
         for i, batch in enumerate(val_loader):
             inp = batch["A"]
-            target = batch["B"]
+            target = torch.cat([batch["B"],batch["C"]],dim=1)
             data_time.update(time.time() - end)
             output = model(inp)
             target = target.cuda(non_blocking=True)
@@ -243,4 +243,3 @@ def inference(config, data_loader, model):
     logger.info(msg)
 
     return nme, predictions
-
