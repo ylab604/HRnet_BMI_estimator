@@ -1,6 +1,6 @@
 # HRnet_estimator
 
-<img src="<https://github.com/ylab604/HRnet_BMI_estimator/blob/main/HRnet_BMI_estimator.png>>
+<img src="https://github.com/ylab604/HRnet_BMI_estimator/blob/main/HRnet_BMI_estimator.png">
 
 --고려사항 & to do--
 1. 현재 batchsize =32 으로 바꿈
