@@ -5,10 +5,7 @@ PRINT_FREQ: 50
 DATASET:
   DATASET: Thuman
   ROOT: 'C:\\Users\\user\\Desktop\\dataset\\0000_OBJ'
-  #RENDER: '.\\RENDER\\0000'
-  #NORMAL: '.\\RENDER_NORMAL\\0000'
-  #DEPTH: '.\\RENDER_DEPTH\\0000'
-  
+
   
   TRAINSET: './data/wflw/face_landmarks_wflw_train.csv'
   TESTSET: './data/wflw/face_landmarks_wflw_test.csv'
