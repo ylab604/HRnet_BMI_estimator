@@ -352,7 +352,7 @@ class HighResolutionNet(nn.Module):
         )
 
         final_inp_channels = sum(pre_stage_channels)
-        # last_layer
+        # last_layer define output channel of hrnet 현재는 6!!
         self.head = nn.Sequential(
             nn.Conv2d(
                 in_channels=final_inp_channels,
