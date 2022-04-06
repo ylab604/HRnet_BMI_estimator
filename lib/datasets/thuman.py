@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
 # Copyright (c) Microsoft
 # Licensed under the MIT License.
-# Created by ylab604
+# Created by ylab
 # ------------------------------------------------------------------------------
 
 import os
@@ -38,26 +38,27 @@ class Thuman(data.Dataset):
         normal_transforms=None,
         depth_transforms=None,
     ):
-        
+       
         self.data_root = cfg.DATASET.ROOT
         self.input_size = cfg.MODEL.IMAGE_SIZE
         self.output_size = cfg.MODEL.HEATMAP_SIZE
         self.sigma = cfg.MODEL.SIGMA
-        
+       
         # default = 가우시안
         self.label_type = cfg.MODEL.TARGET_TYPE
-       
         self.render_transforms = transforms.Compose(render_transforms)
         self.normal_transforms = transforms.Compose(normal_transforms)
         self.depth_transforms = transforms.Compose(depth_transforms)
-        # print(type(self.render_transforms))
-       
+      
+        ##ROOT: 'C:\\Users\\user\\Desktop\\dataset'  \\0000_OBJ
         ############################################################################
         data_root_path = self.data_root+"/*"
         data = glob.glob(data_root_path)
-        #get renderdata
+        
+        #####get renderdata#####
+        #for n in range(len(data)):
         render_file_list=[] 
-        for n in range(len(data)):
+        for n in range(400):
             j = "{:04d}".format(n)
             i = j + "_OBJ"
             path = self.data_root + i + "/RENDER/" + j + "/*"
@@ -67,13 +68,13 @@ class Thuman(data.Dataset):
             #print(1)
             #print(render_file_list)
             render_file_list = sorted(render_file_list)
-            #
-
+            
         #print(render_file_list)
         self.render_files=render_file_list
-        #get render_normal_data
+        
+        #####get render_normal_data#####
         render_normal_file_list=[] 
-        for n in range(len(data)):
+        for n in range(400):
             j = "{:04d}".format(n)
             i = j + "_OBJ"
             path = self.data_root + i + "/RENDER_NORMAL/" + j + "/*"
@@ -84,9 +85,10 @@ class Thuman(data.Dataset):
             #print(file_list)
             render_normal_file_list = sorted(render_normal_file_list)
         self.normal_files=render_normal_file_list
-        #get render_depth_data
+        
+        #####get render_depth_data#####
         render_depth_file_list=[]
-        for n in range(len(data)):
+        for n in range(400):
             j = "{:04d}".format(n)
             i = j + "_OBJ"
             path = self.data_root + i + "/RENDER_DEPTH/" + j + "/*"
@@ -97,8 +99,6 @@ class Thuman(data.Dataset):
             #print(file_list)
             render_depth_file_list = sorted(render_depth_file_list)
         self.depth_files=render_depth_file_list
-        
-        
         ############################################################################
 
     def __len__(self):
@@ -124,7 +124,7 @@ class Thuman(data.Dataset):
         depth_img = self.depth_transforms(depth_img)
         img = render_img
         target = normal_img
-     
+       
 
         return {"A": img, "B": target, "C": depth_img}
 
