@@ -2,9 +2,15 @@
 
 <img src="https://github.com/ylab604/HRnet_BMI_estimator/blob/main/HRnet_BMI_estimator.png">
 
---고려사항 & to do--
+-- 고려사항 --
 1. 현재 batchsize =32 으로 바꿈
 2. Hrnet-w18 로 세팅되어있음
-3. loader 추가 <완료>
-4. masking 추가 <고려중> ->고려 하지 않음
-5. channel 변경 => normal + depth output <완료>
+
+-- to do --
+1. validation loader 추가
+2. 두번째 HRnet input channel 1x1 conv로 수정
+3. 주석달기
+
+
+-- 주의사항 --
+yaml 파일 한글 주석처리해도 실행안됨
