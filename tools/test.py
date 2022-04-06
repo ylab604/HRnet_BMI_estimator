@@ -4,7 +4,6 @@
 # Created by Tianheng Cheng(tianhengcheng@gmail.com)
 # Modified by ylab
 # ------------------------------------------------------------------------------
-
 import os
 import pprint
 import argparse
@@ -17,8 +16,6 @@ import sys
 import matplotlib.pyplot as plt
 from PIL import Image
 import torchvision.transforms as transforms
-
-
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 import lib.models as models
 from lib.config import config, update_config
@@ -28,12 +25,11 @@ from lib.core import function
 import numpy as np
 
 
+#parser => --path 이미지경로/ --cfg yaml파일 경로 / --model-file pth파일 경로
 def parse_args():
-
     parser = argparse.ArgumentParser(
         description="PyTorch depth prediction evaluation script"
     )
-
     parser.add_argument(
         "--path", type=str, default="data", metavar="D", help="image file path"
     )
@@ -43,23 +39,18 @@ def parse_args():
     parser.add_argument(
         "--model-file", help="model parameters", required=True, type=str
     )
-
     args = parser.parse_args()
     update_config(config, args)
     return args
 
-
-def reNormalize(img,mean,std):
-    img = img.detach().cpu().numpy().transpose(1,2,0)
-    img = img*std +mean
-    img = img.clip(0,1)
+#tensor 2 image
+def reNormalize(img, mean, std):
+    img = img.detach().cpu().numpy().transpose(1, 2, 0)
+    img = img * std + mean
+    img = img.clip(0, 1)
     return img
 
-
-
-
-
-
+#model inference 메인
 def main():
     mean = [0.485, 0.456, 0.406]
     std = [0.229, 0.224, 0.225]
@@ -80,34 +71,31 @@ def main():
 
     ###############################
     state_dict = torch.load(args.model_file, map_location=torch.device("cpu"))
-
-   
     ###############################
-
-
-    #if "state_dict" in state_dict.keys():
-    #    state_dict = state_dict["state_dict"]
-    #    model.load_state_dict(state_dict.module.state_dict())
-    #else:
-    #    model.module.load_state_dict(state_dict)
-
-
     if "state_dict" in state_dict.keys():
         state_dict = state_dict["state_dict"]
         model.load_state_dict(state_dict.state_dict())
     else:
         model.load_state_dict(state_dict)
     ############
-
-    img = Image.open(args.path)
-    img = img.resize((512, 512))
-    img_np = np.asarray(img)
-    img_t = torch.from_numpy(img_np)
-    img_t = img_t.view(1, 3, 512, 512)
-    img_t = img_t.float()
-    output = model(img_t)
+    input_img = Image.open(args.path)
+    input_transforms = [
+        transforms.ToTensor(),
+        transforms.Resize((512, 512)),
+        transforms.Normalize(mean=mean, std=std),
+    ]
+    input_transforms = transforms.Compose(input_transforms)
+    input_tensor = input_transforms(input_img)
+    input_tensor = input_tensor.view(1, 3, 512, 512)
+    output = model(input_tensor)
     output = output.squeeze()
-    plt.imsave('4_2.jpeg',reNormalize(output,mean,std))
+    # print(output[0:3].shape)
+    # [0:3] normal map [3:6] depth map
+    output_normal = output[0:3]
+    output_depth = output[3:6]
+    print(output_depth.shape)
+    plt.imsave("4_05_3_normal.jpeg", reNormalize(output_normal, mean, std))
+    plt.imsave("4_05_4_depth.jpeg", reNormalize(output_depth, mean, std))
 
 
 if __name__ == "__main__":
