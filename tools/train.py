@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft
 # Licensed under the MIT License.
 # Created by Tianheng Cheng(tianhengcheng@gmail.com)
+# modified by ylab
 # ------------------------------------------------------------------------------
 
 import os
@@ -15,14 +16,15 @@ import torch.backends.cudnn as cudnn
 from tensorboardX import SummaryWriter
 from torch.utils.data import DataLoader
 import sys
-
+import torchvision
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 import lib.models as models
 from lib.config import config, update_config
 from lib.datasets import get_dataset
 from lib.core import function
 from lib.utils import utils
-
+from torch.autograd import Variable
+import matplotlib.pyplot as plt
 
 def parse_args():
 
@@ -38,7 +40,6 @@ def parse_args():
 
 
 def main():
-
     args = parse_args()
 
     logger, final_output_dir, tb_log_dir = utils.create_logger(
@@ -53,6 +54,32 @@ def main():
     cudnn.enabled = config.CUDNN.ENABLED
 
     model = models.Hrnet2DNnet(config)
+    #cuda = True if torch.cuda.is_available() else Fals
+    #fig = plt.figure(figsize=(10, 10))
+    #rows = 6 
+    #cols = 1
+    #Tensor = torch.cuda.FloatTensor if cuda else torch.FloatTensor
+    #dataset_name='thuman'
+    def reNormalize(img,mean,std):
+        img = img.numpy().transpose(1,2,0)
+        img = img*std +mean
+        img = img.clip(0,1)
+        return img
+
+    #if you want sampling on training release these code
+    #os.makedirs("images/%s/val" % dataset_name, exist_ok=True)
+    #def sample_images(epoch, loader, mode):
+        #imgs = next(iter(loader))
+        #gray = Variable(imgs["A"].type(Tensor))
+        #output = model(gray)    
+        #output_img = torchvision.utils.make_grid(output.data, nrow=1)
+        #rows = 6
+        #cols = 1
+        #ax1 = fig.add_subplot(rows, cols, 1)
+        #ax1.imshow(reNormalize(output_img.cpu(), mean, std))
+        #ax1.set_title('output')  
+        #fig.savefig("images/%s/%s/epoch_%s.png" % (dataset_name, mode, epoch), pad_inches=0)
+
 
     writer_dict = {
         "writer": SummaryWriter(log_dir=tb_log_dir),
@@ -93,19 +120,20 @@ def main():
     print("!!!!")
     mean = [0.485, 0.456, 0.406]
     std = [0.229, 0.224, 0.225]
+    #render, normal, depth 이미지 resize, tensor, normalize
     render_transforms = [
+	transforms.Resize((512, 512)),
         transforms.ToTensor(),
-        transforms.Resize((512, 512)),
         transforms.Normalize(mean=mean, std=std),
     ]
     normal_transforms = [
+	transforms.Resize((512, 512)),
         transforms.ToTensor(),
-        transforms.Resize((512, 512)),
         transforms.Normalize(mean=mean, std=std),
     ]
     depth_transforms = [
+	transforms.Resize((512, 512)),
         transforms.ToTensor(),
-        transforms.Resize((512, 512)),
         transforms.Normalize(mean=mean, std=std),
     ]
 
@@ -123,50 +151,50 @@ def main():
         pin_memory=config.PIN_MEMORY,
     )
     print("??")
-
+    # need to update val_loader
     # for X in train_loader:
     #    print(X)
-    val_loader = DataLoader(
-        dataset=dataset_type(config, is_train=False,
-        render_transforms=render_transforms,
-            normal_transforms=normal_transforms,
-            depth_transforms=depth_transforms,
-            ),
-        batch_size=config.TEST.BATCH_SIZE_PER_GPU * len(gpus),
-        shuffle=False,
-        num_workers=config.WORKERS,
-        pin_memory=config.PIN_MEMORY,
-    )
+    #val_loader = DataLoader(
+    #    dataset=dataset_type(config, is_train=False,
+    #    render_transforms=render_transforms,
+    #        normal_transforms=normal_transforms,
+    #        depth_transforms=depth_transforms,
+    #        ),
+    #    batch_size=config.TEST.BATCH_SIZE_PER_GPU * len(gpus),
+    #    shuffle=False,
+    #    num_workers=config.WORKERS,
+    #    pin_memory=config.PIN_MEMORY,
+    #)
 
     for epoch in range(last_epoch, config.TRAIN.END_EPOCH):
         lr_scheduler.step()
-
+        
         function.train(
             config, train_loader, model, criterion, optimizer, epoch, writer_dict
         )
 
         # evaluate
-        nme, predictions = function.validate(
-            config, val_loader, model, criterion, epoch, writer_dict
-        )
+        #nme, predictions = function.validate(
+        #    config, val_loader, model, criterion, epoch, writer_dict
+        #)
 
-        is_best = nme < best_nme
-        best_nme = min(nme, best_nme)
-
+        #is_best = nme < best_nme
+        #best_nme = min(nme, best_nme)
+        #"best_nme": best_nme, predictions,is_best,
         logger.info("=> saving checkpoint to {}".format(final_output_dir))
-        print("best:", is_best)
+        #print("best:", is_best)
         utils.save_checkpoint(
             {
                 "state_dict": model,
                 "epoch": epoch + 1,
-                "best_nme": best_nme,
+                
                 "optimizer": optimizer.state_dict(),
             },
-            predictions,
-            is_best,
+            
             final_output_dir,
             "checkpoint_{}.pth".format(epoch),
         )
+        #sample_images(epoch, train_loader, 'val')
 
     final_model_state_file = os.path.join(final_output_dir, "final_state.pth")
     logger.info("saving final model state to {}".format(final_model_state_file))
@@ -177,4 +205,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
