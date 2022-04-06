@@ -3,6 +3,7 @@
 # Licensed under the MIT License.
 # Written by Bin Xiao (Bin.Xiao@microsoft.com)
 # Modified by Ke Sun (sunk@mail.ustc.edu.cn), Tianheng Cheng(tianhengcheng@gmail.com)
+# modified by ylab
 # ------------------------------------------------------------------------------
 
 from __future__ import absolute_import
@@ -81,17 +82,15 @@ def get_optimizer(cfg, model):
     return optimizer
 
 
-def save_checkpoint(states, predictions, is_best,
-                    output_dir, filename='checkpoint.pth'):
-    preds = predictions.cpu().data.numpy()
+def save_checkpoint(states, output_dir, filename='checkpoint.pth'):
+    #preds = predictions.cpu().data.numpy()
     torch.save(states, os.path.join(output_dir, filename))
-    torch.save(preds, os.path.join(output_dir, 'current_pred.pth'))
+    #torch.save(preds, os.path.join(output_dir, 'current_pred.pth'))
 
     latest_path = os.path.join(output_dir, 'latest.pth')
     if os.path.islink(latest_path):
         os.remove(latest_path)
     os.symlink(os.path.join(output_dir, filename), latest_path)
 
-    if is_best and 'state_dict' in states.keys():
-        torch.save(states['state_dict'].module, os.path.join(output_dir, 'model_best.pth'))
-
+    #if is_best and 'state_dict' in states.keys():
+    #    torch.save(states['state_dict'].module, os.path.join(output_dir, 'model_best.pth'))
