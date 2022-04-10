@@ -10,7 +10,7 @@
 
 -- to do --
 1. validation loader 추가
-~~2. 두번째 HRnet input channel 1x1 conv로 수정~~
+2. ~~두번째 HRnet input channel 1x1 conv로 수정~~
 3. 주석달기
 4. 앞쪽 hrnet pth파일 업로드 
 
