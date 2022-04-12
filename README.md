@@ -28,9 +28,10 @@
 
 
 --ming to do list--
-1. Scaler 검토
-2. Attention 공부
-3. regression head 구성
+1. Scaler 검토(datasets/BMI.py 수정)
+2. minmaxscaler 저장(re-normalization을 위해서)
+3. Attention 공부
+4. regression head 구성
 
 ========================
 
