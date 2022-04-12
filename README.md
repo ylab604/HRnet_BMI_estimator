@@ -2,7 +2,7 @@
 
 <img src="https://github.com/ylab604/HRnet_BMI_estimator/blob/main/ming_0411_did.PNG">
 
--- 고려사항 --
+-- 😈고려사항😈 --
 1. 현재 batchsize =32 으로 바꿈
 2. Hrnet-w18 로 세팅되어있음
 
@@ -35,10 +35,10 @@
 
 ========================
 
--- 주의사항 --
+-- 😈주의사항😈 --
 * yaml 파일 한글 주석처리해도 실행안됨
 
 
--- Relate Work --
+-- 👨‍👧‍👧Relate Work👨‍ --
 
 https://github.com/ylab604/3D-human-body-paper-review
