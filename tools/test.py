@@ -52,8 +52,8 @@ def reNormalize(img, mean, std):
 
 #model inference 메인
 def main():
-    mean = [0.485, 0.456, 0.406]
-    std = [0.229, 0.224, 0.225]
+    # mean = [0.485, 0.456, 0.406]
+    # std = [0.229, 0.224, 0.225]
     args = parse_args()
     # state_dict = torch.load(args.model_file)
 
@@ -77,14 +77,44 @@ def main():
         model.load_state_dict(state_dict.state_dict())
     else:
         model.load_state_dict(state_dict)
-    ############
-    input_img = Image.open(args.path)
-    input_transforms = [
+    ############ transform ############################
+    def _get_image_size(img):
+        if transforms.functional._is_pil_image(img):
+            return img.size
+        elif isinstance(img, torch.Tensor) and img.dim() > 2:
+            return img.shape[-2:][::-1]
+        else:
+            raise TypeError("Unexpected type {}".format(type(img)))
+
+    class Resize(transforms.Resize):
+
+        def __call__(self, img):
+            h, w = _get_image_size(img)
+            scale = max(w, h) / float(self.size)
+            new_w, new_h = int(w / scale), int(h / scale)
+            return transforms.functional.resize(img, (new_w, new_h), self.interpolation)
+
+
+    # dataset_type = get_dataset(config)
+    mean = [0.485, 0.456, 0.406]
+    std = [0.229, 0.224, 0.225]
+
+    image_transforms = [
+        Resize(512),
+        transforms.Pad(512),
+        transforms.CenterCrop(512),
         transforms.ToTensor(),
-        transforms.Resize((512, 512)),
-        transforms.Normalize(mean=mean, std=std),
+        transforms.Normalize(mean,std)
     ]
-    input_transforms = transforms.Compose(input_transforms)
+    ##############
+    input_img = Image.open(args.path)
+    # input_transforms = [
+    #     transforms.ToTensor(),
+    #     transforms.Resize((512, 512)),
+    #     transforms.Normalize(mean=mean, std=std),
+    # ]
+
+    input_transforms = transforms.Compose(image_transforms)
     input_tensor = input_transforms(input_img)
     input_tensor = input_tensor.view(1, 3, 512, 512)
     output = model(input_tensor)
