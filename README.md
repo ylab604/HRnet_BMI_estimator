@@ -14,7 +14,7 @@
 
 ========================
 
--- 🐹Tory did🐹 --
+-- 🐿Tory did🐿 --
 1. validation loader 추가
 2. 두번째 HRnet input channel 1x1 conv로 수정 (input channel 9로 조정)
 3. 주석달기
@@ -28,7 +28,7 @@
 
 ========================
 
--- 🥰ming did🥰 --
+-- 🤩ming did🤩 --
 1. train_data : 2917개 / test_data : 1254개
 2. DataLoader 구성
 3. 2번째 HRnet Regression 모델 구성
