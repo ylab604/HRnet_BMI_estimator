@@ -1,6 +1,6 @@
 # HRnet_estimator
 
-<img src="https://github.com/ylab604/HRnet_BMI_estimator/blob/main/HRnet_BMI_estimator.png">
+<img src="https://github.com/ylab604/HRnet_BMI_estimator/blob/main/ming_0411_did.PNG">
 
 -- 고려사항 --
 1. 현재 batchsize =32 으로 바꿈
@@ -23,3 +23,15 @@
 -- Relate Work --
 
 https://github.com/ylab604/3D-human-body-paper-review
+
+
+-- ming did --
+1. train_data : 2917개 / test_data : 1254개
+2. DataLoader 구성
+3. 2번째 HRnet Regression 모델 구성
+
+
+--ming to do list--
+1. Inference.py 구성
+2. Scaler 검토
+3. Attention 공부
