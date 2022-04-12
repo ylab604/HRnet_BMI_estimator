@@ -35,3 +35,4 @@ https://github.com/ylab604/3D-human-body-paper-review
 1. Inference.py 구성
 2. Scaler 검토
 3. Attention 공부
+4. regression head 구성
