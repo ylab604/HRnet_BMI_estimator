@@ -25,14 +25,14 @@
 2. DataLoader 구성
 3. 2번째 HRnet Regression 모델 구성
 4. Inference.py 구성
+5. Scaler 검토(datasets/BMI.py 수정)
+6. minmaxscaler 저장(re-normalization을 위해서)
 
 
 -- 🥰ming to do list🥰 --
-1. Scaler 검토(datasets/BMI.py 수정)
-2. minmaxscaler 저장(re-normalization을 위해서)
-3. Attention 공부
-4. regression head 구성
-5. datasets/hanchaedae.py 만들기
+1. Attention 공부
+2. regression head 구성
+3. datasets/hanchaedae.py 만들기
 
 ========================
 
