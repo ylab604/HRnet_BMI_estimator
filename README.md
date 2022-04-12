@@ -32,6 +32,7 @@
 2. minmaxscaler 저장(re-normalization을 위해서)
 3. Attention 공부
 4. regression head 구성
+5. datasets/hanchaedae.py 만들기
 
 ========================
 
