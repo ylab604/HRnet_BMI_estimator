@@ -24,13 +24,13 @@
 1. train_data : 2917개 / test_data : 1254개
 2. DataLoader 구성
 3. 2번째 HRnet Regression 모델 구성
+4. Inference.py 구성
 
 
 --ming to do list--
-1. Inference.py 구성
-2. Scaler 검토
-3. Attention 공부
-4. regression head 구성
+1. Scaler 검토
+2. Attention 공부
+3. regression head 구성
 
 ========================
 
