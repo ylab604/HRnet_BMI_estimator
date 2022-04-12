@@ -101,14 +101,14 @@ _C.TRAIN.END_EPOCH = 60
 _C.TRAIN.RESUME = True
 _C.TRAIN.CHECKPOINT = ''
 
-_C.TRAIN.BATCH_SIZE_PER_GPU = 16
+_C.TRAIN.BATCH_SIZE_PER_GPU = 8
 _C.TRAIN.SHUFFLE = True
 
 # testing
 _C.TEST = CN()
 
 # size of images for each device
-_C.TEST.BATCH_SIZE_PER_GPU = 32
+_C.TEST.BATCH_SIZE_PER_GPU = 8
 
 
 def update_config(cfg, args):
