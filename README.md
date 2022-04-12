@@ -39,6 +39,6 @@
 * yaml 파일 한글 주석처리해도 실행안됨
 
 
--- 👨‍👧‍👧Relate Work👨‍ --
+-- 👨‍👧‍👧Relate Work👩‍👧‍👦 --
 
 https://github.com/ylab604/3D-human-body-paper-review
