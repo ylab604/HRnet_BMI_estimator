@@ -9,7 +9,7 @@
 
 
 -- 😈고려사항😈 --
-1. 현재 batchsize =32 으로 바꿈
+1. 현재 batchsize =16 으로 바꿈
 2. Hrnet-w18 로 세팅되어있음
 
 ========================
@@ -19,12 +19,12 @@
 2. 두번째 HRnet input channel 1x1 conv로 수정 (input channel 9로 조정)
 3. 주석달기
 4. 앞쪽 hrnet pth파일 업로드 
+5. 이미지 배경제거
 
 
 -- 🐹Tory to do list🐹 --
-1. 이미지 배경제거
-2. 논문읽기 
-3. 데이터셋 보강 3d to Dexa
+1. 논문읽기 
+2. 데이터셋 보강 3d to Dexa
 
 ========================
 
