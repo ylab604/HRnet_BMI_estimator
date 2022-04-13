@@ -45,7 +45,7 @@
 ========================
 
 -- 현재 수행해야 하는 것 --
-<img src="https://github.com/ylab604/HRnet_BMI_estimator/blob/main/0413_%ED%95%9C%EC%B2%B4%EB%8C%80_todo_framework.jpg">
+<img src="https://github.com/ylab604/HRnet_BMI_estimator/blob/main/image/0413_hanchaedae_todo_framework.jpg">
 
 -- 👨‍👧‍👧Relate Work👩‍👧‍👦 --
 
