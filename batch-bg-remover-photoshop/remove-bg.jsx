@@ -1,3 +1,7 @@
+//################
+//thank you for https://github.com/kavindupasan/batch-bg-remover-photoshop 
+//modified by tory & ming
+//################
 var sourceFolder = Folder("C:\\Users\\user\\Downloads\\datasets\\datasets\\Image_test");
 
 if (sourceFolder != null) {
