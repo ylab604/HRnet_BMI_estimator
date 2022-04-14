@@ -11,7 +11,7 @@
 -- 😈**고려사항**😈 --
 1. 현재 batchsize =16 으로 바꿈
 2. model_DN : Hrnet-w18-v2 
-3. model_reg : Hrnet-w18-C
+3. model_reg : Hrnet-w18-C // Hrnet-w48-C
 4. 2D to BMI : train_data : 2917개 / test_data : 1254개
 
 ========================
@@ -40,11 +40,9 @@
 
 -- 🥰**ming to do list**🥰 --
 1. Attention 공부
-2. regression head 구성
-3. datasets/hanchaedae.py 만들기
-4. 논문읽기
-5. 데이터 셋 정리
-6. Log 파일 Loss 정리(그래프로)
+2. datasets/hanchaedae.py 만들기
+3. 논문읽기
+4. 데이터 셋 정리
 
 ========================
 
