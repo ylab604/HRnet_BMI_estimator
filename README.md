@@ -49,6 +49,6 @@
 -- **현재 수행해야 하는 것** --
 <img src="https://github.com/ylab604/HRnet_BMI_estimator/blob/main/image/0413_hanchaedae_todo_framework.jpg">
 
--- 👨‍👧‍👧Relate Work👩‍👧‍👦 --
+-- 👨‍👧‍👧**Relate Work**👩‍👧‍👦 --
 
 https://github.com/ylab604/3D-human-body-paper-review
