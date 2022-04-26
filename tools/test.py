@@ -123,9 +123,9 @@ def main():
     # [0:3] normal map [3:6] depth map
     output_normal = output[0:3]
     output_depth = output[3:6]
-    print(output_depth.shape)
-    plt.imsave("4_05_3_normal.jpeg", reNormalize(output_normal, mean, std))
-    plt.imsave("4_05_4_depth.jpeg", reNormalize(output_depth, mean, std))
+    print(output_depth[1])
+    plt.imsave("4_05_5_normal.jpeg", reNormalize(output_normal, mean, std))
+    plt.imsave("4_05_6_depth.jpeg", reNormalize(output_depth, mean, std))
 
 
 if __name__ == "__main__":

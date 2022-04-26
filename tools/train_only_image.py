@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 import lib.models as models
 from lib.config import config, update_config, config_cls, update_config_cls
 from lib.datasets import get_dataset
-from lib.core import function_cls
+from lib.core import function_cls, function_only_image
 from lib.utils import utils
 from torch.autograd import Variable
 import matplotlib.pyplot as plt
@@ -31,48 +31,17 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Train Face Alignment")
 
     parser.add_argument(
-        "--cfg", help="experiment configuration filename", required=True, type=str
-    )
-    parser.add_argument(
         "--cfg_cls", help="experiment configuration filename", required=True, type=str
     )
-    parser.add_argument(
-        "--model_file", help="model parameters", required=True, type=str
-    )
+
 
     args = parser.parse_args()
-    update_config(config, args)
     update_config_cls(config_cls, args)
     return args
 
 def main():
 
     #=====================Inference========================================
-    args = parse_args()
-    # state_dict = torch.load(args.model_file)
-
-    cudnn.benchmark = config.CUDNN.BENCHMARK
-    cudnn.determinstic = config.CUDNN.DETERMINISTIC
-    cudnn.enabled = config.CUDNN.ENABLED
-
-    config.defrost()
-    config.MODEL.INIT_WEIGHTS = False
-    config.freeze()
-
-    model_dn = models.Hrnet2DNnet(config)
-    gpus = list(config.GPUS)
-    model_dn = nn.DataParallel(model_dn, device_ids=gpus).cuda()
-
-
-    ###############################
-    # state_dict = torch.load(args.model_file, map_location=torch.device("cpu"))
-    state_dict = torch.load(args.model_file)
-    ###############################
-    if "state_dict" in state_dict.keys():
-        state_dict = state_dict["state_dict"]
-        model_dn.load_state_dict(state_dict.state_dict())
-    else:
-        model_dn.load_state_dict(state_dict)
 
 
     args = parse_args()
@@ -97,7 +66,6 @@ def main():
     model_cls = models.get_cls_net(config_cls)
 
     gpus = list(config_cls.GPUS)
-    model_dn = nn.DataParallel(model_dn, device_ids=gpus).cuda()
     model_cls = nn.DataParallel(model_cls, device_ids=gpus).cuda()
 
     criterion = torch.nn.MSELoss(size_average=True).cuda()
@@ -174,7 +142,7 @@ def main():
 
         lr_scheduler.step()
 
-        function_cls.train(config_cls, train_loader, model_cls, criterion ,optimizer, epoch,writer_dict,model_dn)
+        function_only_image.train(config_cls, train_loader, model_cls, criterion ,optimizer, epoch,writer_dict)
 
         logger.info("=> saving checkpoint to {}".format(final_output_dir))
 
@@ -196,10 +164,6 @@ def main():
     logger.info("saving final model state to {}".format(final_model_state_file))
     torch.save(model_cls.module.state_dict(), final_model_state_file)
     writer_dict["writer"].close()
-
-
-
-
 
 
 
