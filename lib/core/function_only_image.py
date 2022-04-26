@@ -43,7 +43,7 @@ class AverageMeter(object):
         self.avg = self.sum / self.count
 
 
-def train(config_cls, train_loader, model_cls, critertion, optimizer_cls, epoch, writer_dict, model_dn, optimizer_dn=None):
+def train(config_cls, train_loader, model_cls, critertion, optimizer_cls, epoch, writer_dict, optimizer_dn=None):
 
     batch_time = AverageMeter()
     data_time = AverageMeter()
@@ -65,33 +65,13 @@ def train(config_cls, train_loader, model_cls, critertion, optimizer_cls, epoch,
         data_time.update(time.time() - end)
 
         # compute the output
-        output_dn = model_dn(inp_image)
-        output_dn=output_dn.cuda(non_blocking=True)
         target = target.cuda(non_blocking=True)
-        # print(output.shape)
-        # print(target.shape)
-        #loss_dn = critertion(output_dn, target_dn)
 
-        cls_input = torch.cat([inp_image, output_dn], dim=1)
-        output=model_cls(cls_input)
+        output=model_cls(inp_image)
         # GT_bmi, predictor_bmi => MSELoss
         output = output.type(torch.cuda.FloatTensor)
         target = target.type(torch.cuda.FloatTensor)
         loss_cls = critertion(output, target)
-
-
-        # NME
-        # score_map = output.data.cpu()
-        # preds = decode_preds(score_map, meta['center'], meta['scale'], [64, 64])
-
-        # nme_batch = compute_nme(preds, meta)
-        # nme_batch_sum = nme_batch_sum + np.sum(nme_batch)
-        # nme_count = nme_count + preds.size(0)
-        # ========================================================
-        # optimizer_dn.zero_grad()
-        # loss_dn.backward()
-        # optimizer_dn.step()
-        #=======================================================
 
         # optimize
         optimizer_cls.zero_grad()
@@ -99,7 +79,6 @@ def train(config_cls, train_loader, model_cls, critertion, optimizer_cls, epoch,
         optimizer_cls.step()
 
         losses_cls.update(loss_cls.item(), inp_image.size(0))
-        # losses_dn.update(loss_dn.item(), inp_image.size(0))
 
         batch_time.update(time.time() - end)
         if i % config_cls.PRINT_FREQ == 0:

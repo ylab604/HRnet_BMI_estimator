@@ -43,14 +43,14 @@ class AverageMeter(object):
         self.avg = self.sum / self.count
 
 
-def train(config_cls, train_loader, model_cls, critertion, optimizer_cls, epoch, writer_dict, model_dn, optimizer_dn=None):
+def train(config_cls, train_loader, model_all, critertion, optimizer_cls, epoch, writer_dict):
 
     batch_time = AverageMeter()
     data_time = AverageMeter()
     losses_cls = AverageMeter()
     #losses_dn = AverageMeter()
 
-    model_cls.train()
+    model_all.train()
     nme_count = 1
     nme_batch_sum = 1
 
@@ -65,33 +65,13 @@ def train(config_cls, train_loader, model_cls, critertion, optimizer_cls, epoch,
         data_time.update(time.time() - end)
 
         # compute the output
-        output_dn = model_dn(inp_image)
-        output_dn=output_dn.cuda(non_blocking=True)
+        output_predict = model_all(inp_image)
+        output_predict=output_predict.cuda(non_blocking=True)
         target = target.cuda(non_blocking=True)
-        # print(output.shape)
-        # print(target.shape)
-        #loss_dn = critertion(output_dn, target_dn)
 
-        cls_input = torch.cat([inp_image, output_dn], dim=1)
-        output=model_cls(cls_input)
-        # GT_bmi, predictor_bmi => MSELoss
-        output = output.type(torch.cuda.FloatTensor)
+        output_predict = output_predict.type(torch.cuda.FloatTensor)
         target = target.type(torch.cuda.FloatTensor)
-        loss_cls = critertion(output, target)
-
-
-        # NME
-        # score_map = output.data.cpu()
-        # preds = decode_preds(score_map, meta['center'], meta['scale'], [64, 64])
-
-        # nme_batch = compute_nme(preds, meta)
-        # nme_batch_sum = nme_batch_sum + np.sum(nme_batch)
-        # nme_count = nme_count + preds.size(0)
-        # ========================================================
-        # optimizer_dn.zero_grad()
-        # loss_dn.backward()
-        # optimizer_dn.step()
-        #=======================================================
+        loss_cls = critertion(output_predict, target)
 
         # optimize
         optimizer_cls.zero_grad()

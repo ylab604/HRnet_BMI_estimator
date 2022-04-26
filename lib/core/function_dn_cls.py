@@ -8,12 +8,14 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
+from torchvision.utils import save_image
 
 import time
 import logging
 
 import torch
 import numpy as np
+import matplotlib.pyplot as plt
 
 from .evaluation import decode_preds, compute_nme
 
@@ -42,13 +44,18 @@ class AverageMeter(object):
         self.count += n
         self.avg = self.sum / self.count
 
+def reNormalize(img, mean, std):
+    img = img.detach().cpu().numpy().transpose(1, 2, 0)
+    img = img * std + mean
+    img = img.clip(0, 1)
+    return img
 
-def train(config_cls, train_loader, model_cls, critertion, optimizer_cls, epoch, writer_dict, model_dn, optimizer_dn=None):
+def train(config_cls, train_loader, model_cls, critertion, optimizer_cls, epoch, writer_dict, model_dn_fine, optimizer_dn):
 
     batch_time = AverageMeter()
     data_time = AverageMeter()
     losses_cls = AverageMeter()
-    #losses_dn = AverageMeter()
+    losses_dn = AverageMeter()
 
     model_cls.train()
     nme_count = 1
@@ -60,46 +67,40 @@ def train(config_cls, train_loader, model_cls, critertion, optimizer_cls, epoch,
         # measure data time
         inp_image = batch["Image"]
         inp_image=inp_image.cuda(non_blocking=True)
-        # print(inp.shape)
         target = batch['BMI']
         data_time.update(time.time() - end)
 
-        # compute the output
-        output_dn = model_dn(inp_image)
-        output_dn=output_dn.cuda(non_blocking=True)
-        target = target.cuda(non_blocking=True)
-        # print(output.shape)
-        # print(target.shape)
-        #loss_dn = critertion(output_dn, target_dn)
+        output_dn = model_dn_fine(inp_image) #[x, 3, 512, 512]
 
-        cls_input = torch.cat([inp_image, output_dn], dim=1)
-        output=model_cls(cls_input)
+
+        output_dn=output_dn.cuda(non_blocking=True)
+
+        target = target.cuda(non_blocking=True) # [x,1] -> bmi
+
+        output=model_cls(output_dn)
         # GT_bmi, predictor_bmi => MSELoss
         output = output.type(torch.cuda.FloatTensor)
         target = target.type(torch.cuda.FloatTensor)
-        loss_cls = critertion(output, target)
 
+        loss_dn = critertion(output, target)
 
-        # NME
-        # score_map = output.data.cpu()
-        # preds = decode_preds(score_map, meta['center'], meta['scale'], [64, 64])
+        #========================================================
+        optimizer_dn.zero_grad()
+        loss_dn.backward(retain_graph=True) #? ㅜ
+        optimizer_dn.step()
 
-        # nme_batch = compute_nme(preds, meta)
-        # nme_batch_sum = nme_batch_sum + np.sum(nme_batch)
-        # nme_count = nme_count + preds.size(0)
-        # ========================================================
-        # optimizer_dn.zero_grad()
-        # loss_dn.backward()
-        # optimizer_dn.step()
+        losses_dn.update(loss_dn.item(), inp_image.size(0))
+
         #=======================================================
-
         # optimize
+        loss_cls = critertion(output.detach(), target)
         optimizer_cls.zero_grad()
+        loss_cls.requires_grad_(True)
         loss_cls.backward()
         optimizer_cls.step()
 
         losses_cls.update(loss_cls.item(), inp_image.size(0))
-        # losses_dn.update(loss_dn.item(), inp_image.size(0))
+
 
         batch_time.update(time.time() - end)
         if i % config_cls.PRINT_FREQ == 0:
